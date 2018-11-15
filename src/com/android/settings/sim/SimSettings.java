@@ -26,7 +26,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -683,44 +682,26 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             if (!mSwitch.isEnabled()) {
                 return;
             }
-            new SimEnablerDisabler().execute();
-        }
-
-        private class SimEnablerDisabler extends AsyncTask<Void, Void, Integer> {
-
+            int result = -1;
             int newProvisionedState = NOT_PROVISIONED;
+            mCmdInProgress = true;
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                mCmdInProgress = true;
-                showProgressDialog();
-                setEnabled(false);
-            }
-
-            @Override
-            protected Integer doInBackground(Void... params) {
-                int result = -1;
-                newProvisionedState = NOT_PROVISIONED;
-                try {
-                    if (mIsChecked) {
-                        result = mExtTelephony.activateUiccCard(mSir.getSimSlotIndex());
-                        newProvisionedState = PROVISIONED;
-                    } else {
-                        result = mExtTelephony.deactivateUiccCard(mSir.getSimSlotIndex());
-                    }
-                } catch (RemoteException ex) {
-                    loge("Activate  sub failed " + result + " phoneId " + mSir.getSimSlotIndex());
-                } catch (NullPointerException ex) {
-                    loge("Failed to activate sub Exception: " + ex);
+            showProgressDialog();
+            setEnabled(false);
+            try {
+                if (mIsChecked) {
+                    result = mExtTelephony.activateUiccCard(mSir.getSimSlotIndex());
+                    newProvisionedState = PROVISIONED;
+                } else {
+                    result = mExtTelephony.deactivateUiccCard(mSir.getSimSlotIndex());
                 }
-                return result;
+            } catch (RemoteException ex) {
+                loge("Activate  sub failed " + result + " phoneId " + mSir.getSimSlotIndex());
+            } catch (NullPointerException ex) {
+                loge("Failed to activate sub Exception: " + ex);
             }
 
-            @Override
-            protected void onPostExecute(Integer result) {
-                processSetUiccDone(result.intValue(), newProvisionedState);
-            }
+            processSetUiccDone(result, newProvisionedState);
         }
 
         private void processSetUiccDone(int result, int newProvisionedState) {
@@ -831,7 +812,6 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                 .OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == DialogInterface.BUTTON_POSITIVE) {
-                            dismissDialog(sAlertDialog);
                             sendUiccProvisioningRequest();
                         } else if (which == DialogInterface.BUTTON_NEGATIVE) {
                             update();
