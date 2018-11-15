@@ -426,6 +426,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
 
         private boolean mCurrentUiccProvisionState;
         private boolean mIsChecked;
+
         private boolean mCmdInProgress = false;
         private CompoundButton mSwitch;
         //Delay for progress dialog to dismiss
@@ -474,7 +475,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
                 mSwitch.setVisibility(View.GONE);
             } else {
                 mSwitch.setVisibility(View.VISIBLE);
-                mSwitch.setEnabled(!isAirplaneModeOn() && isValid());
+                mSwitch.setEnabled(!isAirplaneModeOn() || isValid());
                 setChecked(getProvisionStatus(mSlotId) == PROVISIONED);
             }
         }

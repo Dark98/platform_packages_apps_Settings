@@ -19,7 +19,7 @@
 
     <PreferenceCategory
             android:key="sim_cards"
-            android:title="@string/available_sims_title"/>
+            android:title="@string/sim_settings_title"/>
 
     <PreferenceCategory
             android:key="sim_activities"
