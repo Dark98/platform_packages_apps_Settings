@@ -505,8 +505,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
             // Disable manual provisioning option to user when
             // device is in Airplane mode. Hide it if the extphone framework
             // is not present, as the operation relies on said framework.
-            if (mExtTelephony == null ||
-                   !mContext.getResources().getBoolean(R.bool.config_enableManualSubProvisioning)) {
+            if (mExtTelephony == null) {
                 mSwitch.setVisibility(View.GONE);
             } else {
                 mSwitch.setVisibility(View.VISIBLE);
