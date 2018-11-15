@@ -143,9 +143,7 @@ public class SimSettings extends RestrictedSettingsFragment implements Indexable
         @Override
         public void onSubscriptionsChanged() {
             if (DBG) log("onSubscriptionsChanged:");
-            if (isAdded()) {
-                updateSubscriptions();
-            }
+            updateSubscriptions();
         }
     };
 
